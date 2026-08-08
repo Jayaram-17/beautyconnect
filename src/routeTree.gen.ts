@@ -14,8 +14,11 @@ import { Route as FavoritesRouteImport } from './routes/favorites'
 import { Route as NotificationsRouteImport } from './routes/notifications'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as SearchRouteImport } from './routes/search'
+import { Route as ArtistsArtistIdRouteImport } from './routes/artists.$artistId'
+import { Route as BookingNewRouteImport } from './routes/booking.new'
 import { Route as BookingsIndexRouteImport } from './routes/bookings.index'
 import { Route as BookingsBookingIdRouteImport } from './routes/bookings.$bookingId'
+import { Route as ChatConversationIdRouteImport } from './routes/chat.$conversationId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -42,6 +45,16 @@ const SearchRoute = SearchRouteImport.update({
   path: '/search',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ArtistsArtistIdRoute = ArtistsArtistIdRouteImport.update({
+  id: '/artists/$artistId',
+  path: '/artists/$artistId',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BookingNewRoute = BookingNewRouteImport.update({
+  id: '/booking/new',
+  path: '/booking/new',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const BookingsIndexRoute = BookingsIndexRouteImport.update({
   id: '/bookings/',
   path: '/bookings/',
@@ -52,6 +65,11 @@ const BookingsBookingIdRoute = BookingsBookingIdRouteImport.update({
   path: '/bookings/$bookingId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ChatConversationIdRoute = ChatConversationIdRouteImport.update({
+  id: '/chat/$conversationId',
+  path: '/chat/$conversationId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -59,7 +77,10 @@ export interface FileRoutesByFullPath {
   '/notifications': typeof NotificationsRoute
   '/profile': typeof ProfileRoute
   '/search': typeof SearchRoute
+  '/artists/$artistId': typeof ArtistsArtistIdRoute
+  '/booking/new': typeof BookingNewRoute
   '/bookings/$bookingId': typeof BookingsBookingIdRoute
+  '/chat/$conversationId': typeof ChatConversationIdRoute
   '/bookings/': typeof BookingsIndexRoute
 }
 export interface FileRoutesByTo {
@@ -68,7 +89,10 @@ export interface FileRoutesByTo {
   '/notifications': typeof NotificationsRoute
   '/profile': typeof ProfileRoute
   '/search': typeof SearchRoute
+  '/artists/$artistId': typeof ArtistsArtistIdRoute
+  '/booking/new': typeof BookingNewRoute
   '/bookings/$bookingId': typeof BookingsBookingIdRoute
+  '/chat/$conversationId': typeof ChatConversationIdRoute
   '/bookings': typeof BookingsIndexRoute
 }
 export interface FileRoutesById {
@@ -78,7 +102,10 @@ export interface FileRoutesById {
   '/notifications': typeof NotificationsRoute
   '/profile': typeof ProfileRoute
   '/search': typeof SearchRoute
+  '/artists/$artistId': typeof ArtistsArtistIdRoute
+  '/booking/new': typeof BookingNewRoute
   '/bookings/$bookingId': typeof BookingsBookingIdRoute
+  '/chat/$conversationId': typeof ChatConversationIdRoute
   '/bookings/': typeof BookingsIndexRoute
 }
 export interface FileRouteTypes {
@@ -89,7 +116,10 @@ export interface FileRouteTypes {
     | '/notifications'
     | '/profile'
     | '/search'
+    | '/artists/$artistId'
+    | '/booking/new'
     | '/bookings/$bookingId'
+    | '/chat/$conversationId'
     | '/bookings/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -98,7 +128,10 @@ export interface FileRouteTypes {
     | '/notifications'
     | '/profile'
     | '/search'
+    | '/artists/$artistId'
+    | '/booking/new'
     | '/bookings/$bookingId'
+    | '/chat/$conversationId'
     | '/bookings'
   id:
     | '__root__'
@@ -107,7 +140,10 @@ export interface FileRouteTypes {
     | '/notifications'
     | '/profile'
     | '/search'
+    | '/artists/$artistId'
+    | '/booking/new'
     | '/bookings/$bookingId'
+    | '/chat/$conversationId'
     | '/bookings/'
   fileRoutesById: FileRoutesById
 }
@@ -117,7 +153,10 @@ export interface RootRouteChildren {
   NotificationsRoute: typeof NotificationsRoute
   ProfileRoute: typeof ProfileRoute
   SearchRoute: typeof SearchRoute
+  ArtistsArtistIdRoute: typeof ArtistsArtistIdRoute
+  BookingNewRoute: typeof BookingNewRoute
   BookingsBookingIdRoute: typeof BookingsBookingIdRoute
+  ChatConversationIdRoute: typeof ChatConversationIdRoute
   BookingsIndexRoute: typeof BookingsIndexRoute
 }
 
@@ -158,6 +197,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SearchRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/artists/$artistId': {
+      id: '/artists/$artistId'
+      path: '/artists/$artistId'
+      fullPath: '/artists/$artistId'
+      preLoaderRoute: typeof ArtistsArtistIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/booking/new': {
+      id: '/booking/new'
+      path: '/booking/new'
+      fullPath: '/booking/new'
+      preLoaderRoute: typeof BookingNewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/bookings/': {
       id: '/bookings/'
       path: '/bookings'
@@ -172,6 +225,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BookingsBookingIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/chat/$conversationId': {
+      id: '/chat/$conversationId'
+      path: '/chat/$conversationId'
+      fullPath: '/chat/$conversationId'
+      preLoaderRoute: typeof ChatConversationIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -181,7 +241,10 @@ const rootRouteChildren: RootRouteChildren = {
   NotificationsRoute: NotificationsRoute,
   ProfileRoute: ProfileRoute,
   SearchRoute: SearchRoute,
+  ArtistsArtistIdRoute: ArtistsArtistIdRoute,
+  BookingNewRoute: BookingNewRoute,
   BookingsBookingIdRoute: BookingsBookingIdRoute,
+  ChatConversationIdRoute: ChatConversationIdRoute,
   BookingsIndexRoute: BookingsIndexRoute,
 }
 export const routeTree = rootRouteImport
