@@ -6,7 +6,7 @@ import { StatusPill } from "@/components/glam-ui";
 import { artists, bookings, inr, type BookingStatus } from "@/lib/mock-data";
 import { cn } from "@/lib/utils";
 
-export const Route = createFileRoute("/bookings")({
+export const Route = createFileRoute("/bookings/")({
   head: () => ({
     meta: [
       { title: "My Bookings | Glowlist" },
