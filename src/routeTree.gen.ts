@@ -10,33 +10,219 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as FavoritesRouteImport } from './routes/favorites'
+import { Route as NotificationsRouteImport } from './routes/notifications'
+import { Route as ProfileRouteImport } from './routes/profile'
+import { Route as SearchRouteImport } from './routes/search'
+import { Route as ArtistsArtistIdRouteImport } from './routes/artists.$artistId'
+import { Route as BookingNewRouteImport } from './routes/booking.new'
+import { Route as BookingsIndexRouteImport } from './routes/bookings.index'
+import { Route as BookingsBookingIdRouteImport } from './routes/bookings.$bookingId'
+import { Route as ChatConversationIdRouteImport } from './routes/chat.$conversationId'
+import { Route as ProIndexRouteImport } from './routes/pro.index'
+import { Route as ProBookingsRouteImport } from './routes/pro.bookings'
+import { Route as ProCalendarRouteImport } from './routes/pro.calendar'
+import { Route as ProServicesRouteImport } from './routes/pro.services'
+import { Route as ProSubscriptionRouteImport } from './routes/pro.subscription'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const FavoritesRoute = FavoritesRouteImport.update({
+  id: '/favorites',
+  path: '/favorites',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NotificationsRoute = NotificationsRouteImport.update({
+  id: '/notifications',
+  path: '/notifications',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProfileRoute = ProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SearchRoute = SearchRouteImport.update({
+  id: '/search',
+  path: '/search',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ArtistsArtistIdRoute = ArtistsArtistIdRouteImport.update({
+  id: '/artists/$artistId',
+  path: '/artists/$artistId',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BookingNewRoute = BookingNewRouteImport.update({
+  id: '/booking/new',
+  path: '/booking/new',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BookingsIndexRoute = BookingsIndexRouteImport.update({
+  id: '/bookings/',
+  path: '/bookings/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BookingsBookingIdRoute = BookingsBookingIdRouteImport.update({
+  id: '/bookings/$bookingId',
+  path: '/bookings/$bookingId',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ChatConversationIdRoute = ChatConversationIdRouteImport.update({
+  id: '/chat/$conversationId',
+  path: '/chat/$conversationId',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProIndexRoute = ProIndexRouteImport.update({
+  id: '/pro/',
+  path: '/pro/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProBookingsRoute = ProBookingsRouteImport.update({
+  id: '/pro/bookings',
+  path: '/pro/bookings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProCalendarRoute = ProCalendarRouteImport.update({
+  id: '/pro/calendar',
+  path: '/pro/calendar',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProServicesRoute = ProServicesRouteImport.update({
+  id: '/pro/services',
+  path: '/pro/services',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProSubscriptionRoute = ProSubscriptionRouteImport.update({
+  id: '/pro/subscription',
+  path: '/pro/subscription',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/favorites': typeof FavoritesRoute
+  '/notifications': typeof NotificationsRoute
+  '/profile': typeof ProfileRoute
+  '/search': typeof SearchRoute
+  '/artists/$artistId': typeof ArtistsArtistIdRoute
+  '/booking/new': typeof BookingNewRoute
+  '/bookings/$bookingId': typeof BookingsBookingIdRoute
+  '/chat/$conversationId': typeof ChatConversationIdRoute
+  '/pro/bookings': typeof ProBookingsRoute
+  '/pro/calendar': typeof ProCalendarRoute
+  '/pro/services': typeof ProServicesRoute
+  '/pro/subscription': typeof ProSubscriptionRoute
+  '/bookings/': typeof BookingsIndexRoute
+  '/pro/': typeof ProIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/favorites': typeof FavoritesRoute
+  '/notifications': typeof NotificationsRoute
+  '/profile': typeof ProfileRoute
+  '/search': typeof SearchRoute
+  '/artists/$artistId': typeof ArtistsArtistIdRoute
+  '/booking/new': typeof BookingNewRoute
+  '/bookings/$bookingId': typeof BookingsBookingIdRoute
+  '/chat/$conversationId': typeof ChatConversationIdRoute
+  '/pro/bookings': typeof ProBookingsRoute
+  '/pro/calendar': typeof ProCalendarRoute
+  '/pro/services': typeof ProServicesRoute
+  '/pro/subscription': typeof ProSubscriptionRoute
+  '/bookings': typeof BookingsIndexRoute
+  '/pro': typeof ProIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/favorites': typeof FavoritesRoute
+  '/notifications': typeof NotificationsRoute
+  '/profile': typeof ProfileRoute
+  '/search': typeof SearchRoute
+  '/artists/$artistId': typeof ArtistsArtistIdRoute
+  '/booking/new': typeof BookingNewRoute
+  '/bookings/$bookingId': typeof BookingsBookingIdRoute
+  '/chat/$conversationId': typeof ChatConversationIdRoute
+  '/pro/bookings': typeof ProBookingsRoute
+  '/pro/calendar': typeof ProCalendarRoute
+  '/pro/services': typeof ProServicesRoute
+  '/pro/subscription': typeof ProSubscriptionRoute
+  '/bookings/': typeof BookingsIndexRoute
+  '/pro/': typeof ProIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/favorites'
+    | '/notifications'
+    | '/profile'
+    | '/search'
+    | '/artists/$artistId'
+    | '/booking/new'
+    | '/bookings/$bookingId'
+    | '/chat/$conversationId'
+    | '/pro/bookings'
+    | '/pro/calendar'
+    | '/pro/services'
+    | '/pro/subscription'
+    | '/bookings/'
+    | '/pro/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/favorites'
+    | '/notifications'
+    | '/profile'
+    | '/search'
+    | '/artists/$artistId'
+    | '/booking/new'
+    | '/bookings/$bookingId'
+    | '/chat/$conversationId'
+    | '/pro/bookings'
+    | '/pro/calendar'
+    | '/pro/services'
+    | '/pro/subscription'
+    | '/bookings'
+    | '/pro'
+  id:
+    | '__root__'
+    | '/'
+    | '/favorites'
+    | '/notifications'
+    | '/profile'
+    | '/search'
+    | '/artists/$artistId'
+    | '/booking/new'
+    | '/bookings/$bookingId'
+    | '/chat/$conversationId'
+    | '/pro/bookings'
+    | '/pro/calendar'
+    | '/pro/services'
+    | '/pro/subscription'
+    | '/bookings/'
+    | '/pro/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  FavoritesRoute: typeof FavoritesRoute
+  NotificationsRoute: typeof NotificationsRoute
+  ProfileRoute: typeof ProfileRoute
+  SearchRoute: typeof SearchRoute
+  ArtistsArtistIdRoute: typeof ArtistsArtistIdRoute
+  BookingNewRoute: typeof BookingNewRoute
+  BookingsBookingIdRoute: typeof BookingsBookingIdRoute
+  ChatConversationIdRoute: typeof ChatConversationIdRoute
+  ProBookingsRoute: typeof ProBookingsRoute
+  ProCalendarRoute: typeof ProCalendarRoute
+  ProServicesRoute: typeof ProServicesRoute
+  ProSubscriptionRoute: typeof ProSubscriptionRoute
+  BookingsIndexRoute: typeof BookingsIndexRoute
+  ProIndexRoute: typeof ProIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,22 +234,124 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/favorites': {
+      id: '/favorites'
+      path: '/favorites'
+      fullPath: '/favorites'
+      preLoaderRoute: typeof FavoritesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/notifications': {
+      id: '/notifications'
+      path: '/notifications'
+      fullPath: '/notifications'
+      preLoaderRoute: typeof NotificationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/profile': {
+      id: '/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof ProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/search': {
+      id: '/search'
+      path: '/search'
+      fullPath: '/search'
+      preLoaderRoute: typeof SearchRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/artists/$artistId': {
+      id: '/artists/$artistId'
+      path: '/artists/$artistId'
+      fullPath: '/artists/$artistId'
+      preLoaderRoute: typeof ArtistsArtistIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/booking/new': {
+      id: '/booking/new'
+      path: '/booking/new'
+      fullPath: '/booking/new'
+      preLoaderRoute: typeof BookingNewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/bookings/': {
+      id: '/bookings/'
+      path: '/bookings'
+      fullPath: '/bookings/'
+      preLoaderRoute: typeof BookingsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/bookings/$bookingId': {
+      id: '/bookings/$bookingId'
+      path: '/bookings/$bookingId'
+      fullPath: '/bookings/$bookingId'
+      preLoaderRoute: typeof BookingsBookingIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/chat/$conversationId': {
+      id: '/chat/$conversationId'
+      path: '/chat/$conversationId'
+      fullPath: '/chat/$conversationId'
+      preLoaderRoute: typeof ChatConversationIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pro/': {
+      id: '/pro/'
+      path: '/pro'
+      fullPath: '/pro/'
+      preLoaderRoute: typeof ProIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pro/bookings': {
+      id: '/pro/bookings'
+      path: '/pro/bookings'
+      fullPath: '/pro/bookings'
+      preLoaderRoute: typeof ProBookingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pro/calendar': {
+      id: '/pro/calendar'
+      path: '/pro/calendar'
+      fullPath: '/pro/calendar'
+      preLoaderRoute: typeof ProCalendarRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pro/services': {
+      id: '/pro/services'
+      path: '/pro/services'
+      fullPath: '/pro/services'
+      preLoaderRoute: typeof ProServicesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pro/subscription': {
+      id: '/pro/subscription'
+      path: '/pro/subscription'
+      fullPath: '/pro/subscription'
+      preLoaderRoute: typeof ProSubscriptionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  FavoritesRoute: FavoritesRoute,
+  NotificationsRoute: NotificationsRoute,
+  ProfileRoute: ProfileRoute,
+  SearchRoute: SearchRoute,
+  ArtistsArtistIdRoute: ArtistsArtistIdRoute,
+  BookingNewRoute: BookingNewRoute,
+  BookingsBookingIdRoute: BookingsBookingIdRoute,
+  ChatConversationIdRoute: ChatConversationIdRoute,
+  ProBookingsRoute: ProBookingsRoute,
+  ProCalendarRoute: ProCalendarRoute,
+  ProServicesRoute: ProServicesRoute,
+  ProSubscriptionRoute: ProSubscriptionRoute,
+  BookingsIndexRoute: BookingsIndexRoute,
+  ProIndexRoute: ProIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
