@@ -19,6 +19,11 @@ import { Route as BookingNewRouteImport } from './routes/booking.new'
 import { Route as BookingsIndexRouteImport } from './routes/bookings.index'
 import { Route as BookingsBookingIdRouteImport } from './routes/bookings.$bookingId'
 import { Route as ChatConversationIdRouteImport } from './routes/chat.$conversationId'
+import { Route as ProIndexRouteImport } from './routes/pro.index'
+import { Route as ProBookingsRouteImport } from './routes/pro.bookings'
+import { Route as ProCalendarRouteImport } from './routes/pro.calendar'
+import { Route as ProServicesRouteImport } from './routes/pro.services'
+import { Route as ProSubscriptionRouteImport } from './routes/pro.subscription'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -70,6 +75,31 @@ const ChatConversationIdRoute = ChatConversationIdRouteImport.update({
   path: '/chat/$conversationId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ProIndexRoute = ProIndexRouteImport.update({
+  id: '/pro/',
+  path: '/pro/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProBookingsRoute = ProBookingsRouteImport.update({
+  id: '/pro/bookings',
+  path: '/pro/bookings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProCalendarRoute = ProCalendarRouteImport.update({
+  id: '/pro/calendar',
+  path: '/pro/calendar',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProServicesRoute = ProServicesRouteImport.update({
+  id: '/pro/services',
+  path: '/pro/services',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProSubscriptionRoute = ProSubscriptionRouteImport.update({
+  id: '/pro/subscription',
+  path: '/pro/subscription',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -81,7 +111,12 @@ export interface FileRoutesByFullPath {
   '/booking/new': typeof BookingNewRoute
   '/bookings/$bookingId': typeof BookingsBookingIdRoute
   '/chat/$conversationId': typeof ChatConversationIdRoute
+  '/pro/bookings': typeof ProBookingsRoute
+  '/pro/calendar': typeof ProCalendarRoute
+  '/pro/services': typeof ProServicesRoute
+  '/pro/subscription': typeof ProSubscriptionRoute
   '/bookings/': typeof BookingsIndexRoute
+  '/pro/': typeof ProIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -93,7 +128,12 @@ export interface FileRoutesByTo {
   '/booking/new': typeof BookingNewRoute
   '/bookings/$bookingId': typeof BookingsBookingIdRoute
   '/chat/$conversationId': typeof ChatConversationIdRoute
+  '/pro/bookings': typeof ProBookingsRoute
+  '/pro/calendar': typeof ProCalendarRoute
+  '/pro/services': typeof ProServicesRoute
+  '/pro/subscription': typeof ProSubscriptionRoute
   '/bookings': typeof BookingsIndexRoute
+  '/pro': typeof ProIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -106,7 +146,12 @@ export interface FileRoutesById {
   '/booking/new': typeof BookingNewRoute
   '/bookings/$bookingId': typeof BookingsBookingIdRoute
   '/chat/$conversationId': typeof ChatConversationIdRoute
+  '/pro/bookings': typeof ProBookingsRoute
+  '/pro/calendar': typeof ProCalendarRoute
+  '/pro/services': typeof ProServicesRoute
+  '/pro/subscription': typeof ProSubscriptionRoute
   '/bookings/': typeof BookingsIndexRoute
+  '/pro/': typeof ProIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -120,7 +165,12 @@ export interface FileRouteTypes {
     | '/booking/new'
     | '/bookings/$bookingId'
     | '/chat/$conversationId'
+    | '/pro/bookings'
+    | '/pro/calendar'
+    | '/pro/services'
+    | '/pro/subscription'
     | '/bookings/'
+    | '/pro/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -132,7 +182,12 @@ export interface FileRouteTypes {
     | '/booking/new'
     | '/bookings/$bookingId'
     | '/chat/$conversationId'
+    | '/pro/bookings'
+    | '/pro/calendar'
+    | '/pro/services'
+    | '/pro/subscription'
     | '/bookings'
+    | '/pro'
   id:
     | '__root__'
     | '/'
@@ -144,7 +199,12 @@ export interface FileRouteTypes {
     | '/booking/new'
     | '/bookings/$bookingId'
     | '/chat/$conversationId'
+    | '/pro/bookings'
+    | '/pro/calendar'
+    | '/pro/services'
+    | '/pro/subscription'
     | '/bookings/'
+    | '/pro/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -157,7 +217,12 @@ export interface RootRouteChildren {
   BookingNewRoute: typeof BookingNewRoute
   BookingsBookingIdRoute: typeof BookingsBookingIdRoute
   ChatConversationIdRoute: typeof ChatConversationIdRoute
+  ProBookingsRoute: typeof ProBookingsRoute
+  ProCalendarRoute: typeof ProCalendarRoute
+  ProServicesRoute: typeof ProServicesRoute
+  ProSubscriptionRoute: typeof ProSubscriptionRoute
   BookingsIndexRoute: typeof BookingsIndexRoute
+  ProIndexRoute: typeof ProIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -232,6 +297,41 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ChatConversationIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/pro/': {
+      id: '/pro/'
+      path: '/pro'
+      fullPath: '/pro/'
+      preLoaderRoute: typeof ProIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pro/bookings': {
+      id: '/pro/bookings'
+      path: '/pro/bookings'
+      fullPath: '/pro/bookings'
+      preLoaderRoute: typeof ProBookingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pro/calendar': {
+      id: '/pro/calendar'
+      path: '/pro/calendar'
+      fullPath: '/pro/calendar'
+      preLoaderRoute: typeof ProCalendarRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pro/services': {
+      id: '/pro/services'
+      path: '/pro/services'
+      fullPath: '/pro/services'
+      preLoaderRoute: typeof ProServicesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pro/subscription': {
+      id: '/pro/subscription'
+      path: '/pro/subscription'
+      fullPath: '/pro/subscription'
+      preLoaderRoute: typeof ProSubscriptionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -245,7 +345,12 @@ const rootRouteChildren: RootRouteChildren = {
   BookingNewRoute: BookingNewRoute,
   BookingsBookingIdRoute: BookingsBookingIdRoute,
   ChatConversationIdRoute: ChatConversationIdRoute,
+  ProBookingsRoute: ProBookingsRoute,
+  ProCalendarRoute: ProCalendarRoute,
+  ProServicesRoute: ProServicesRoute,
+  ProSubscriptionRoute: ProSubscriptionRoute,
   BookingsIndexRoute: BookingsIndexRoute,
+  ProIndexRoute: ProIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
