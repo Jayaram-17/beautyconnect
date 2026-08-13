@@ -10,10 +10,17 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthRouteImport } from './routes/auth'
 import { Route as FavoritesRouteImport } from './routes/favorites'
 import { Route as NotificationsRouteImport } from './routes/notifications'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as SearchRouteImport } from './routes/search'
+import { Route as SettingsRouteImport } from './routes/settings'
+import { Route as AdminIndexRouteImport } from './routes/admin.index'
+import { Route as AdminArtistsRouteImport } from './routes/admin.artists'
+import { Route as AdminBookingsRouteImport } from './routes/admin.bookings'
+import { Route as AdminFraudRouteImport } from './routes/admin.fraud'
+import { Route as AdminTransactionsRouteImport } from './routes/admin.transactions'
 import { Route as ArtistsArtistIdRouteImport } from './routes/artists.$artistId'
 import { Route as BookingNewRouteImport } from './routes/booking.new'
 import { Route as BookingsIndexRouteImport } from './routes/bookings.index'
@@ -28,6 +35,11 @@ import { Route as ProSubscriptionRouteImport } from './routes/pro.subscription'
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
 const FavoritesRoute = FavoritesRouteImport.update({
@@ -48,6 +60,36 @@ const ProfileRoute = ProfileRouteImport.update({
 const SearchRoute = SearchRouteImport.update({
   id: '/search',
   path: '/search',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SettingsRoute = SettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminIndexRoute = AdminIndexRouteImport.update({
+  id: '/admin/',
+  path: '/admin/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminArtistsRoute = AdminArtistsRouteImport.update({
+  id: '/admin/artists',
+  path: '/admin/artists',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminBookingsRoute = AdminBookingsRouteImport.update({
+  id: '/admin/bookings',
+  path: '/admin/bookings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminFraudRoute = AdminFraudRouteImport.update({
+  id: '/admin/fraud',
+  path: '/admin/fraud',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminTransactionsRoute = AdminTransactionsRouteImport.update({
+  id: '/admin/transactions',
+  path: '/admin/transactions',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ArtistsArtistIdRoute = ArtistsArtistIdRouteImport.update({
@@ -103,10 +145,16 @@ const ProSubscriptionRoute = ProSubscriptionRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
   '/favorites': typeof FavoritesRoute
   '/notifications': typeof NotificationsRoute
   '/profile': typeof ProfileRoute
   '/search': typeof SearchRoute
+  '/settings': typeof SettingsRoute
+  '/admin/artists': typeof AdminArtistsRoute
+  '/admin/bookings': typeof AdminBookingsRoute
+  '/admin/fraud': typeof AdminFraudRoute
+  '/admin/transactions': typeof AdminTransactionsRoute
   '/artists/$artistId': typeof ArtistsArtistIdRoute
   '/booking/new': typeof BookingNewRoute
   '/bookings/$bookingId': typeof BookingsBookingIdRoute
@@ -115,15 +163,22 @@ export interface FileRoutesByFullPath {
   '/pro/calendar': typeof ProCalendarRoute
   '/pro/services': typeof ProServicesRoute
   '/pro/subscription': typeof ProSubscriptionRoute
+  '/admin/': typeof AdminIndexRoute
   '/bookings/': typeof BookingsIndexRoute
   '/pro/': typeof ProIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
   '/favorites': typeof FavoritesRoute
   '/notifications': typeof NotificationsRoute
   '/profile': typeof ProfileRoute
   '/search': typeof SearchRoute
+  '/settings': typeof SettingsRoute
+  '/admin/artists': typeof AdminArtistsRoute
+  '/admin/bookings': typeof AdminBookingsRoute
+  '/admin/fraud': typeof AdminFraudRoute
+  '/admin/transactions': typeof AdminTransactionsRoute
   '/artists/$artistId': typeof ArtistsArtistIdRoute
   '/booking/new': typeof BookingNewRoute
   '/bookings/$bookingId': typeof BookingsBookingIdRoute
@@ -132,16 +187,23 @@ export interface FileRoutesByTo {
   '/pro/calendar': typeof ProCalendarRoute
   '/pro/services': typeof ProServicesRoute
   '/pro/subscription': typeof ProSubscriptionRoute
+  '/admin': typeof AdminIndexRoute
   '/bookings': typeof BookingsIndexRoute
   '/pro': typeof ProIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
   '/favorites': typeof FavoritesRoute
   '/notifications': typeof NotificationsRoute
   '/profile': typeof ProfileRoute
   '/search': typeof SearchRoute
+  '/settings': typeof SettingsRoute
+  '/admin/artists': typeof AdminArtistsRoute
+  '/admin/bookings': typeof AdminBookingsRoute
+  '/admin/fraud': typeof AdminFraudRoute
+  '/admin/transactions': typeof AdminTransactionsRoute
   '/artists/$artistId': typeof ArtistsArtistIdRoute
   '/booking/new': typeof BookingNewRoute
   '/bookings/$bookingId': typeof BookingsBookingIdRoute
@@ -150,6 +212,7 @@ export interface FileRoutesById {
   '/pro/calendar': typeof ProCalendarRoute
   '/pro/services': typeof ProServicesRoute
   '/pro/subscription': typeof ProSubscriptionRoute
+  '/admin/': typeof AdminIndexRoute
   '/bookings/': typeof BookingsIndexRoute
   '/pro/': typeof ProIndexRoute
 }
@@ -157,10 +220,16 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/auth'
     | '/favorites'
     | '/notifications'
     | '/profile'
     | '/search'
+    | '/settings'
+    | '/admin/artists'
+    | '/admin/bookings'
+    | '/admin/fraud'
+    | '/admin/transactions'
     | '/artists/$artistId'
     | '/booking/new'
     | '/bookings/$bookingId'
@@ -169,15 +238,22 @@ export interface FileRouteTypes {
     | '/pro/calendar'
     | '/pro/services'
     | '/pro/subscription'
+    | '/admin/'
     | '/bookings/'
     | '/pro/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/auth'
     | '/favorites'
     | '/notifications'
     | '/profile'
     | '/search'
+    | '/settings'
+    | '/admin/artists'
+    | '/admin/bookings'
+    | '/admin/fraud'
+    | '/admin/transactions'
     | '/artists/$artistId'
     | '/booking/new'
     | '/bookings/$bookingId'
@@ -186,15 +262,22 @@ export interface FileRouteTypes {
     | '/pro/calendar'
     | '/pro/services'
     | '/pro/subscription'
+    | '/admin'
     | '/bookings'
     | '/pro'
   id:
     | '__root__'
     | '/'
+    | '/auth'
     | '/favorites'
     | '/notifications'
     | '/profile'
     | '/search'
+    | '/settings'
+    | '/admin/artists'
+    | '/admin/bookings'
+    | '/admin/fraud'
+    | '/admin/transactions'
     | '/artists/$artistId'
     | '/booking/new'
     | '/bookings/$bookingId'
@@ -203,16 +286,23 @@ export interface FileRouteTypes {
     | '/pro/calendar'
     | '/pro/services'
     | '/pro/subscription'
+    | '/admin/'
     | '/bookings/'
     | '/pro/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthRoute: typeof AuthRoute
   FavoritesRoute: typeof FavoritesRoute
   NotificationsRoute: typeof NotificationsRoute
   ProfileRoute: typeof ProfileRoute
   SearchRoute: typeof SearchRoute
+  SettingsRoute: typeof SettingsRoute
+  AdminArtistsRoute: typeof AdminArtistsRoute
+  AdminBookingsRoute: typeof AdminBookingsRoute
+  AdminFraudRoute: typeof AdminFraudRoute
+  AdminTransactionsRoute: typeof AdminTransactionsRoute
   ArtistsArtistIdRoute: typeof ArtistsArtistIdRoute
   BookingNewRoute: typeof BookingNewRoute
   BookingsBookingIdRoute: typeof BookingsBookingIdRoute
@@ -221,6 +311,7 @@ export interface RootRouteChildren {
   ProCalendarRoute: typeof ProCalendarRoute
   ProServicesRoute: typeof ProServicesRoute
   ProSubscriptionRoute: typeof ProSubscriptionRoute
+  AdminIndexRoute: typeof AdminIndexRoute
   BookingsIndexRoute: typeof BookingsIndexRoute
   ProIndexRoute: typeof ProIndexRoute
 }
@@ -232,6 +323,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/favorites': {
@@ -260,6 +358,48 @@ declare module '@tanstack/react-router' {
       path: '/search'
       fullPath: '/search'
       preLoaderRoute: typeof SearchRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/settings': {
+      id: '/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof SettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/': {
+      id: '/admin/'
+      path: '/admin'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/artists': {
+      id: '/admin/artists'
+      path: '/admin/artists'
+      fullPath: '/admin/artists'
+      preLoaderRoute: typeof AdminArtistsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/bookings': {
+      id: '/admin/bookings'
+      path: '/admin/bookings'
+      fullPath: '/admin/bookings'
+      preLoaderRoute: typeof AdminBookingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/fraud': {
+      id: '/admin/fraud'
+      path: '/admin/fraud'
+      fullPath: '/admin/fraud'
+      preLoaderRoute: typeof AdminFraudRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/transactions': {
+      id: '/admin/transactions'
+      path: '/admin/transactions'
+      fullPath: '/admin/transactions'
+      preLoaderRoute: typeof AdminTransactionsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/artists/$artistId': {
@@ -337,10 +477,16 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthRoute: AuthRoute,
   FavoritesRoute: FavoritesRoute,
   NotificationsRoute: NotificationsRoute,
   ProfileRoute: ProfileRoute,
   SearchRoute: SearchRoute,
+  SettingsRoute: SettingsRoute,
+  AdminArtistsRoute: AdminArtistsRoute,
+  AdminBookingsRoute: AdminBookingsRoute,
+  AdminFraudRoute: AdminFraudRoute,
+  AdminTransactionsRoute: AdminTransactionsRoute,
   ArtistsArtistIdRoute: ArtistsArtistIdRoute,
   BookingNewRoute: BookingNewRoute,
   BookingsBookingIdRoute: BookingsBookingIdRoute,
@@ -349,9 +495,20 @@ const rootRouteChildren: RootRouteChildren = {
   ProCalendarRoute: ProCalendarRoute,
   ProServicesRoute: ProServicesRoute,
   ProSubscriptionRoute: ProSubscriptionRoute,
+  AdminIndexRoute: AdminIndexRoute,
   BookingsIndexRoute: BookingsIndexRoute,
   ProIndexRoute: ProIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}

@@ -63,24 +63,27 @@ export function ArtistCard({ artist }: { artist: Artist }) {
   );
 }
 
-const statusStyles: Record<BookingStatus, string> = {
+const statusStyles: Record<string, string> = {
   PENDING: "bg-warning/20 text-warning-foreground",
   ACCEPTED: "bg-accent text-accent-foreground",
   CONFIRMED: "bg-success/15 text-success",
   COMPLETED: "bg-muted text-muted-foreground",
   CANCELLED: "bg-destructive/12 text-destructive",
   REJECTED: "bg-destructive/12 text-destructive",
+  HELD_IN_ESCROW: "bg-amber-500/20 text-amber-700 dark:text-amber-300",
+  REFUNDED: "bg-destructive/12 text-destructive",
+  PROCESSING: "bg-blue-500/20 text-blue-600 dark:text-blue-400",
 };
 
-export function StatusPill({ status }: { status: BookingStatus }) {
+export function StatusPill({ status }: { status: string }) {
   return (
     <span
       className={cn(
         "rounded-full px-2.5 py-1 text-[0.65rem] font-bold uppercase tracking-wider",
-        statusStyles[status],
+        statusStyles[status] ?? "bg-muted text-muted-foreground",
       )}
     >
-      {status.toLowerCase()}
+      {status.replace(/_/g, " ").toLowerCase()}
     </span>
   );
 }

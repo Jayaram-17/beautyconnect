@@ -1,114 +1,18 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { ImagePlus, Plus } from "lucide-react";
-import { useState } from "react";
+import { Plus } from "lucide-react";
+import { useEffect, useState, type FormEvent } from "react";
+import { toast } from "sonner";
 import { AppShell } from "@/components/app-shell";
 import { Switch } from "@/components/ui/switch";
-import { artistPackages, artistServices, inr } from "@/lib/mock-data";
-import { cn } from "@/lib/utils";
 
-export const Route = createFileRoute("/pro/services")({
-  head: () => ({
-    meta: [
-      { title: "Services & Portfolio | Glowlist Studio" },
-      {
-        name: "description",
-        content:
-          "Manage your service menu, pricing, packages and portfolio gallery from one screen.",
-      },
-      { property: "og:title", content: "Services & Portfolio | Glowlist Studio" },
-      {
-        property: "og:description",
-        content: "Manage your service menu, pricing, packages and gallery.",
-      },
-    ],
-  }),
-  component: ArtistServices,
-});
+export const Route = createFileRoute("/pro/services")({ component: ArtistServices });
+type Service = { id: string; name: string; durationMinutes: number; price: number; active: boolean };
+const inr = (amount: number) => new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 }).format(amount);
 
 function ArtistServices() {
-  const [services, setServices] = useState(artistServices);
-  const [tab, setTab] = useState<"Services" | "Packages" | "Gallery">("Services");
-
-  return (
-    <AppShell title="My offering" subtitle="Services, packages and portfolio">
-      <div className="flex gap-1 rounded-2xl bg-muted p-1">
-        {(["Services", "Packages", "Gallery"] as const).map((t) => (
-          <button
-            key={t}
-            onClick={() => setTab(t)}
-            className={cn(
-              "flex-1 rounded-xl py-2 text-sm font-semibold transition-colors",
-              tab === t ? "bg-card shadow-soft" : "text-muted-foreground",
-            )}
-          >
-            {t}
-          </button>
-        ))}
-      </div>
-
-      {tab === "Services" && (
-        <div className="mt-4 flex flex-col gap-3">
-          {services.map((s) => (
-            <div key={s.id} className="surface flex items-center gap-3 p-4">
-              <div className="min-w-0 flex-1">
-                <p className="truncate text-sm font-semibold">{s.name}</p>
-                <p className="text-xs text-muted-foreground">
-                  {s.duration} · {inr(s.price)}
-                </p>
-              </div>
-              <Switch
-                checked={s.active}
-                onCheckedChange={(v) =>
-                  setServices((prev) =>
-                    prev.map((x) => (x.id === s.id ? { ...x, active: v } : x)),
-                  )
-                }
-              />
-            </div>
-          ))}
-          <button className="flex items-center justify-center gap-2 rounded-2xl border border-dashed py-3.5 text-sm font-semibold text-primary">
-            <Plus className="size-4" /> Add service
-          </button>
-        </div>
-      )}
-
-      {tab === "Packages" && (
-        <div className="mt-4 flex flex-col gap-3">
-          {artistPackages.map((p) => (
-            <div key={p.id} className="surface p-4">
-              <div className="flex items-baseline justify-between">
-                <h3 className="font-semibold">{p.name}</h3>
-                <span className="font-semibold text-primary">{inr(p.price)}</span>
-              </div>
-              <ul className="mt-2 space-y-1 text-xs text-muted-foreground">
-                {p.includes.map((i) => (
-                  <li key={i}>• {i}</li>
-                ))}
-              </ul>
-            </div>
-          ))}
-          <button className="flex items-center justify-center gap-2 rounded-2xl border border-dashed py-3.5 text-sm font-semibold text-primary">
-            <Plus className="size-4" /> Create package
-          </button>
-        </div>
-      )}
-
-      {tab === "Gallery" && (
-        <div className="mt-4 grid grid-cols-3 gap-2">
-          {Array.from({ length: 8 }).map((_, i) => (
-            <div
-              key={i}
-              className="aspect-square rounded-xl"
-              style={{
-                backgroundImage: `linear-gradient(${120 + i * 25}deg, oklch(0.7 0.12 ${(20 + i * 34) % 360}), oklch(0.88 0.06 ${(70 + i * 40) % 360}))`,
-              }}
-            />
-          ))}
-          <button className="grid aspect-square place-items-center rounded-xl border border-dashed text-primary">
-            <ImagePlus className="size-5" />
-          </button>
-        </div>
-      )}
-    </AppShell>
-  );
+  const [services, setServices] = useState<Service[]>([]); const [loading, setLoading] = useState(true); const [error, setError] = useState(""); const [showForm, setShowForm] = useState(false); const [saving, setSaving] = useState(false);
+  useEffect(() => { void fetch("/api/artists/me/services").then(async (response) => { const data = await response.json() as { services?: Service[]; error?: string }; if (!response.ok) throw new Error(data.error); setServices(data.services ?? []); }).catch((reason: unknown) => setError(reason instanceof Error ? reason.message : "Could not load services.")).finally(() => setLoading(false)); }, []);
+  const toggleService = async (service: Service, active: boolean) => { setServices((current) => current.map((item) => item.id === service.id ? { ...item, active } : item)); try { const response = await fetch(`/api/artists/me/services/${service.id}`, { method: "PATCH", headers: { "content-type": "application/json" }, body: JSON.stringify({ active }) }); const data = await response.json() as { service?: Service; error?: string }; if (!response.ok || !data.service) throw new Error(data.error); setServices((current) => current.map((item) => item.id === service.id ? data.service! : item)); } catch (reason) { setServices((current) => current.map((item) => item.id === service.id ? service : item)); toast.error(reason instanceof Error ? reason.message : "Could not update service."); } };
+  const addService = async (event: FormEvent<HTMLFormElement>) => { event.preventDefault(); const form = new FormData(event.currentTarget); setSaving(true); try { const response = await fetch("/api/artists/me/services", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ name: form.get("name"), durationMinutes: Number(form.get("durationMinutes")), price: Number(form.get("price")) }) }); const data = await response.json() as { service?: Service; error?: string }; if (!response.ok || !data.service) throw new Error(data.error); setServices((current) => [data.service!, ...current]); setShowForm(false); toast.success("Service added"); } catch (reason) { toast.error(reason instanceof Error ? reason.message : "Could not add service."); } finally { setSaving(false); } };
+  return <AppShell title="My services" subtitle="Manage the services clients can book"><div className="surface p-4"><p className="text-sm font-semibold">Your live service menu</p><p className="mt-1 text-xs text-muted-foreground">Only active services are available for clients to book.</p></div>{error && <p className="surface mt-4 text-sm text-destructive">{error}</p>}{loading && <p className="surface mt-4 text-sm text-muted-foreground">Loading services…</p>}<div className="mt-4 flex flex-col gap-3">{services.map((service) => <div key={service.id} className="surface flex items-center gap-3 p-4"><div className="min-w-0 flex-1"><p className="truncate text-sm font-semibold">{service.name}</p><p className="text-xs text-muted-foreground">{service.durationMinutes} minutes · {inr(service.price)}</p></div><Switch checked={service.active} onCheckedChange={(active) => void toggleService(service, active)} /></div>)}</div>{!loading && !error && services.length === 0 && <p className="py-10 text-center text-sm text-muted-foreground">No services yet. Add your first service below.</p>}{showForm ? <form onSubmit={addService} className="surface mt-4 space-y-3 p-4"><input required name="name" placeholder="Service name" className="h-11 w-full rounded-xl border px-3 text-sm" /><div className="grid grid-cols-2 gap-2"><input required name="durationMinutes" type="number" min="15" step="15" placeholder="Duration (minutes)" className="h-11 min-w-0 rounded-xl border px-3 text-sm" /><input required name="price" type="number" min="0" placeholder="Price (₹)" className="h-11 min-w-0 rounded-xl border px-3 text-sm" /></div><div className="flex gap-2"><button type="button" onClick={() => setShowForm(false)} className="h-10 flex-1 rounded-full border text-sm font-semibold">Cancel</button><button disabled={saving} className="h-10 flex-1 rounded-full bg-primary text-sm font-semibold text-primary-foreground">{saving ? "Saving…" : "Add service"}</button></div></form> : <button onClick={() => setShowForm(true)} className="mt-4 flex w-full items-center justify-center gap-2 rounded-2xl border border-dashed py-3.5 text-sm font-semibold text-primary"><Plus className="size-4" />Add service</button>}</AppShell>;
 }

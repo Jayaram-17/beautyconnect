@@ -1,11 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SlidersHorizontal } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AppShell } from "@/components/app-shell";
 import { ArtistCard } from "@/components/glam-ui";
 import { Input } from "@/components/ui/input";
 import { Slider } from "@/components/ui/slider";
-import { artists, inr, serviceCategories } from "@/lib/mock-data";
+import { inr, serviceCategories, type Artist } from "@/lib/mock-data";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/search")({
@@ -32,6 +32,11 @@ function SearchPage() {
   const [look, setLook] = useState<string | null>(null);
   const [maxPrice, setMaxPrice] = useState(10000);
   const [showFilters, setShowFilters] = useState(true);
+  const [artists, setArtists] = useState<Artist[]>([]);
+
+  useEffect(() => {
+    void fetch("/api/artists").then((response) => response.json()).then((payload: { artists?: Array<Record<string, unknown>> }) => setArtists((payload.artists ?? []).map(toArtist))).catch(() => setArtists([]));
+  }, []);
 
   const results = artists
     .filter((a) => (look ? a.specialties.includes(look) : true))
@@ -113,3 +118,5 @@ function SearchPage() {
     </AppShell>
   );
 }
+
+function toArtist(source: Record<string, unknown>): Artist { const name = String(source.name ?? "Artist"); return { id: String(source.id), name, tagline: String(source.tagline ?? "Independent beauty artist"), city: String(source.city ?? ""), area: String(source.area ?? ""), rating: 0, reviews: 0, startingPrice: Number(source.startingPrice ?? 0), distanceKm: 0, premium: Boolean(source.premium), verified: Boolean(source.verified), specialties: Array.isArray(source.specialties) ? source.specialties.map(String) : [], initials: name.split(" ").map((part) => part[0]).join("").slice(0, 2), hue: 330 }; }
