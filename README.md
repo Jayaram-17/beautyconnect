@@ -303,6 +303,16 @@ mobile/
 
 This design is the reference point for Phase 1 MVP implementation: Auth → Customer/Artist profiles → Gallery/Services → Search → Availability → Booking → Booking management → Push notifications → Reviews (per the phased plan in the prompt). Ready to start scaffolding the backend (modules/auth first, since everything else depends on it) whenever you want to proceed.
 
+## Booking reminders
+
+The booking page saves the customer-selected `appointment_date` and
+`appointment_time`. Vercel calls `GET /api/reminders/run` every 15 minutes from
+the `vercel.json` configuration. Set `CRON_SECRET` in Vercel; it is passed as
+an authorization bearer token automatically. The `sendBookingReminders()`
+function sends in-app reminders in 15-minute windows around 24 hours and 2
+hours before the selected booking time; `reminder_logs` makes each reminder
+idempotent.
+
 This project was built with [Lovable](https://lovable.dev).
 
 ## Build with Lovable
