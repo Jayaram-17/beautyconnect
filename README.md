@@ -306,12 +306,11 @@ This design is the reference point for Phase 1 MVP implementation: Auth → Cust
 ## Booking reminders
 
 The booking page saves the customer-selected `appointment_date` and
-`appointment_time`. Vercel calls `GET /api/reminders/run` every 15 minutes from
-the `vercel.json` configuration. Set `CRON_SECRET` in Vercel; it is passed as
-an authorization bearer token automatically. The `sendBookingReminders()`
-function sends in-app reminders in 15-minute windows around 24 hours and 2
-hours before the selected booking time; `reminder_logs` makes each reminder
-idempotent.
+`appointment_time`. Configure an external scheduler to call
+`GET /api/reminders/run` every 15 minutes with
+`Authorization: Bearer <CRON_SECRET>`. The `sendBookingReminders()` function
+sends in-app reminders in 15-minute windows around 24 hours and 2 hours before
+the selected booking time; `reminder_logs` makes each reminder idempotent.
 
 This project was built with [Lovable](https://lovable.dev).
 
