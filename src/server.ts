@@ -12,7 +12,8 @@ import {
   updateCurrentUser,
   type AccountRole,
 } from "./lib/auth-server";
-import { artistById, artistDashboardFor, artistServicesFor, bookingsFor, changeBookingStatus, createArtistService, createBooking, favoritesFor, listArtists, setArtistServiceActive, toggleFavorite } from "./lib/marketplace-server";
+import { artistById, artistDashboardFor, artistServicesFor, bookingsFor, calendarDataFor, changeBookingStatus, createArtistService, createBooking, createOutsideBooking, deleteOutsideBooking, favoritesFor, listArtists, setArtistServiceActive, toggleFavorite } from "./lib/marketplace-server";
+import { sendBookingReminders } from "./lib/message-reminders";
 
 type ServerEntry = {
   fetch: (request: Request, env: unknown, ctx: unknown) => Promise<Response> | Response;
@@ -90,6 +91,12 @@ async function handleMarketplace(request: Request, pathname: string) {
   try {
     if (pathname === "/api/artists" && request.method === "GET") return json({ artists: await listArtists() });
     if (pathname === "/api/artists/me/dashboard" && request.method === "GET") return json(await artistDashboardFor(request));
+    if (pathname === "/api/artists/me/calendar" && request.method === "GET") return json(await calendarDataFor(request));
+    if (pathname === "/api/artists/me/outside-bookings" && request.method === "POST") {
+      const body = await request.json() as { clientName?: string; clientPhone?: string; service?: string; date?: string; time?: string; location?: string; amount?: number; notes?: string };
+      return json({ booking: await createOutsideBooking(request, { clientName: body.clientName ?? "", clientPhone: body.clientPhone, service: body.service ?? "", date: body.date ?? "", time: body.time ?? "", location: body.location ?? "", amount: body.amount ?? -1, notes: body.notes }) }, { status: 201 });
+    }
+    if (pathname.startsWith("/api/artists/me/outside-bookings/") && request.method === "DELETE") { await deleteOutsideBooking(request, pathname.split("/").at(-1)!); return json({ success: true }); }
     if (pathname === "/api/artists/me/services" && request.method === "GET") return json({ services: await artistServicesFor(request) });
     if (pathname === "/api/artists/me/services" && request.method === "POST") {
       const body = await request.json() as { name?: string; durationMinutes?: number; price?: number };
@@ -155,6 +162,13 @@ export default {
       }
       if (url.pathname.startsWith("/api/artists") || url.pathname.startsWith("/api/favorites") || url.pathname.startsWith("/api/bookings")) {
         return await handleMarketplace(request, url.pathname);
+      }
+      if ((url.pathname === "/api/reminders/run" || url.pathname === "/api/reminders/outside") && (request.method === "GET" || request.method === "POST")) {
+        const cronSecret = process.env["CRON_SECRET"] ?? process.env["REMINDER_CRON_SECRET"];
+        if (cronSecret && request.headers.get("authorization") !== `Bearer ${cronSecret}`) {
+          return json({ error: "Unauthorized" }, { status: 401 });
+        }
+        return json(await sendBookingReminders());
       }
 
       // UptimeRobot / Healthcheck Probe Endpoint
