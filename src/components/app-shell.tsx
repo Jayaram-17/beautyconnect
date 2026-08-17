@@ -6,7 +6,6 @@ import {
   Heart,
   Home,
   LayoutGrid,
-  LogOut,
   Receipt,
   Search,
   Scissors,
@@ -61,7 +60,7 @@ export function AppShell({
   bare?: boolean;
 }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
-  const { user, loading, updateProfile, signOut } = useAuth();
+  const { user, loading, updateProfile } = useAuth();
   const isArtist = user?.role === "ARTIST";
   const isAdmin = pathname.startsWith("/admin");
   const tabs = isAdmin ? adminTabs : isArtist ? artistTabs : customerTabs;
@@ -71,10 +70,7 @@ export function AppShell({
     if (!loading && user?.role !== "ARTIST" && (pathname === "/pro" || pathname.startsWith("/pro/"))) {
       window.location.assign("/");
     }
-    if (!loading && user?.role === "ARTIST" && !isAdmin && (pathname === "/" || pathname === "/search" || pathname.startsWith("/booking") || pathname.startsWith("/bookings") || pathname === "/favorites" || pathname === "/profile")) {
-      window.location.assign("/pro");
-    }
-  }, [isAdmin, loading, pathname, user]);
+  }, [loading, pathname, user]);
 
   if (loading || !user) {
     return <div className="grid min-h-screen place-items-center bg-secondary text-sm text-muted-foreground">Loading your account…</div>;
@@ -96,7 +92,6 @@ export function AppShell({
             </div>
             <div className="flex shrink-0 items-center gap-2">
               {headerRight}
-              {isArtist && <button onClick={() => void signOut().then(() => window.location.assign("/auth"))} aria-label="Log out" title="Log out" className="grid size-10 place-items-center rounded-full border bg-card text-destructive transition-colors hover:bg-accent"><LogOut className="size-4" /></button>}
               <ThemeToggle />
               <Link
                 to="/notifications"

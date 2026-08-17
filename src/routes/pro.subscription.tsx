@@ -36,7 +36,7 @@ function SubscriptionPage() {
         <Crown className="size-7" />
         <h2 className="mt-3 font-display text-2xl font-semibold">Premium</h2>
         <p className="mt-1 text-sm opacity-90">
-          {inr(99)} / month · 24 days remaining
+          {inr(999)} / month · 24 days remaining
         </p>
         <div className="mt-4 h-1.5 rounded-full bg-background/25">
           <div className="h-full w-[80%] rounded-full bg-background/80" />
@@ -64,7 +64,7 @@ function SubscriptionPage() {
           {["12 Aug 2026", "12 Jul 2026", "12 Jun 2026"].map((d) => (
             <li key={d} className="flex justify-between">
               <span className="text-muted-foreground">{d}</span>
-              <span className="font-medium">{inr(99)}</span>
+              <span className="font-medium">{inr(999)}</span>
             </li>
           ))}
         </ul>
