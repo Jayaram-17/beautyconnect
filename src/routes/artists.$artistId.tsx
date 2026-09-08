@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowLeft, BadgeCheck, MapPin, Sparkles } from "lucide-react";
+import { ArrowLeft, BadgeCheck, Crown, MapPin, Sparkles } from "lucide-react";
 import { useEffect, useState } from "react";
 import { AppShell } from "@/components/app-shell";
 import { ArtistAvatar } from "@/components/glam-ui";
@@ -19,7 +19,7 @@ function ArtistServicesPage() {
   const initials = artist.name.split(" ").map((part) => part[0]).join("").slice(0, 2);
   return <AppShell title={artist.name} subtitle={[artist.area, artist.city].filter(Boolean).join(", ") || "Beauty artist"}>
     <Link to="/search" className="mb-4 inline-flex items-center gap-1.5 text-sm font-medium text-muted-foreground"><ArrowLeft className="size-4" /> Back to search</Link>
-    <section className="surface flex gap-4 p-4"><ArtistAvatar initials={initials} hue={330} className="size-16" /><div className="min-w-0 flex-1"><div className="flex items-center gap-1.5"><h2 className="truncate text-lg font-semibold">{artist.name}</h2>{artist.verified && <BadgeCheck className="size-4 text-success" />}</div><p className="mt-1 text-sm text-muted-foreground">{artist.tagline}</p><p className="mt-2 flex items-center gap-1 text-xs text-muted-foreground"><MapPin className="size-3.5" />{artist.area || artist.city || "Location not added"}</p></div></section>
+    <section className="surface flex gap-4 p-4"><ArtistAvatar initials={initials} hue={330} className="size-16" /><div className="min-w-0 flex-1"><div className="flex items-center gap-1.5"><h2 className="truncate text-lg font-semibold">{artist.name}</h2>{artist.verified && <BadgeCheck className="size-4 text-success" />}{artist.premium && <Crown className="size-4 text-gold" />}</div>{artist.premium && <span className="mt-1 inline-flex items-center gap-1 rounded-full border border-amber-500/30 bg-amber-500/15 px-2 py-0.5 text-[0.65rem] font-bold text-amber-600 dark:text-amber-400"><Crown className="size-3 text-amber-500" /> Spotlight Artist</span>}<p className="mt-1 text-sm text-muted-foreground">{artist.tagline}</p><p className="mt-2 flex items-center gap-1 text-xs text-muted-foreground"><MapPin className="size-3.5" />{artist.area || artist.city || "Location not added"}</p></div></section>
     <h3 className="mb-3 mt-6 text-lg font-semibold">Services offered</h3>
     {services.length ? <div className="surface divide-y p-0">{services.map((service) => <div key={service.id} className="flex items-center justify-between gap-3 px-4 py-3.5"><div><p className="text-sm font-semibold">{service.name}</p><p className="text-xs text-muted-foreground">{service.durationMinutes} minutes</p></div><span className="text-sm font-semibold text-primary">{inr(service.price)}</span></div>)}</div> : <div className="surface p-5 text-center text-sm text-muted-foreground">This artist has not published services yet.</div>}
     {services.length > 0 && <Link to="/booking/new" search={{ artistId: artist.id }} className="mt-6 flex w-full items-center justify-center gap-2 rounded-full bg-primary py-3.5 text-sm font-semibold text-primary-foreground"><Sparkles className="size-4" /> Book a service</Link>}

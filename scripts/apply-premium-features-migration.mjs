@@ -30,6 +30,7 @@ await sql.query(`CREATE TABLE IF NOT EXISTS artist_reviews (
   comment TEXT,
   created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 )`);
+await sql.query("ALTER TABLE outside_bookings ADD COLUMN IF NOT EXISTS advance INTEGER NOT NULL DEFAULT 0 CHECK (advance >= 0 AND advance <= amount)");
 await sql.query(`CREATE TABLE IF NOT EXISTS reminder_logs (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   booking_kind TEXT NOT NULL CHECK (booking_kind IN ('PLATFORM', 'OUTSIDE')),

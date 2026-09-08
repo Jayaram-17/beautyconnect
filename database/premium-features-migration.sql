@@ -14,6 +14,8 @@ CREATE TABLE IF NOT EXISTS outside_bookings (
   updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
+ALTER TABLE outside_bookings ADD COLUMN IF NOT EXISTS advance INTEGER NOT NULL DEFAULT 0 CHECK (advance >= 0 AND advance <= amount);
+
 CREATE TABLE IF NOT EXISTS artist_reviews (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   artist_id UUID NOT NULL REFERENCES artist_profiles(user_id) ON DELETE CASCADE,

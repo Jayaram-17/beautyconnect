@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
-import { BadgeCheck, Crown, MapPin, Star } from "lucide-react";
-import type { Artist, BookingStatus } from "@/lib/mock-data";
+import { BadgeCheck, Crown, MapPin, Rocket, Star } from "lucide-react";
+import type { Artist } from "@/lib/mock-data";
 import { inr } from "@/lib/mock-data";
 import { cn } from "@/lib/utils";
 
@@ -29,19 +29,30 @@ export function ArtistAvatar({
   );
 }
 
-export function ArtistCard({ artist }: { artist: Artist }) {
+export function ArtistCard({ artist, showBoostLabel }: { artist: Artist; showBoostLabel?: boolean }) {
   return (
     <Link
       to="/artists/$artistId"
       params={{ artistId: artist.id }}
-      className="surface flex gap-4 p-4 transition-transform active:scale-[0.99]"
+      className={cn(
+        "surface flex gap-4 p-4 transition-all active:scale-[0.99]",
+        artist.premium && "border-amber-500/30 bg-amber-500/5 dark:bg-amber-500/10 shadow-lift",
+      )}
     >
       <ArtistAvatar initials={artist.initials} hue={artist.hue} />
       <div className="min-w-0 flex-1">
-        <div className="flex items-center gap-1.5">
-          <h3 className="truncate text-base font-semibold">{artist.name}</h3>
-          {artist.verified && <BadgeCheck className="size-4 shrink-0 text-success" />}
-          {artist.premium && <Crown className="size-4 shrink-0 text-gold" />}
+        <div className="flex items-center justify-between gap-1.5">
+          <div className="flex items-center gap-1.5 min-w-0">
+            <h3 className="truncate text-base font-semibold">{artist.name}</h3>
+            {artist.verified && <BadgeCheck className="size-4 shrink-0 text-success" />}
+            {artist.premium && <Crown className="size-4 shrink-0 text-gold" />}
+          </div>
+          {artist.premium && (
+            <span className="shrink-0 flex items-center gap-1 rounded-full border border-amber-500/30 bg-amber-500/15 px-2 py-0.5 text-[0.65rem] font-bold text-amber-600 dark:text-amber-400">
+              {showBoostLabel ? <Rocket className="size-3 text-amber-500" /> : <Crown className="size-3 text-amber-500" />}
+              {showBoostLabel ? "Boosted" : "Spotlight"}
+            </span>
+          )}
         </div>
         <p className="truncate text-xs text-muted-foreground">{artist.tagline}</p>
         <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs">

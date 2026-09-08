@@ -12,8 +12,8 @@ import {
   updateCurrentUser,
   type AccountRole,
 } from "./lib/auth-server";
-import { artistById, artistDashboardFor, artistServicesFor, bookingsFor, calendarDataFor, changeBookingStatus, createArtistService, createBooking, createOutsideBooking, deleteOutsideBooking, favoritesFor, listArtists, setArtistServiceActive, toggleFavorite } from "./lib/marketplace-server";
-import { sendBookingReminders } from "./lib/message-reminders";
+import { artistById, artistDashboardFor, artistInsightsFor, artistServicesFor, artistSubscriptionFor, bookingsFor, calendarDataFor, changeBookingStatus, createArtistService, createBooking, createOutsideBooking, deleteOutsideBooking, favoritesFor, listArtists, markNotificationsRead, notificationsFor, setArtistServiceActive, toggleArtistSubscription, toggleFavorite, updateArtistService, updateBookingAdvance } from "./lib/marketplace-server";
+import { getArtistWhatsAppConfig, sendBookingReminders, triggerManualArtistReminder, updateArtistWhatsAppConfig } from "./lib/message-reminders";
 
 type ServerEntry = {
   fetch: (request: Request, env: unknown, ctx: unknown) => Promise<Response> | Response;
@@ -56,18 +56,21 @@ async function handleAuth(request: Request, pathname: string) {
     }
     if (pathname === "/api/auth/me" && request.method === "PATCH") {
       const body = (await request.json()) as Record<string, unknown>;
-      const user = await updateCurrentUser(request, {
-        name: typeof body["name"] === "string" ? body["name"] : undefined,
-        phone: typeof body["phone"] === "string" ? body["phone"] : undefined,
-        city: typeof body["city"] === "string" ? body["city"] : undefined,
-        artistryName: typeof body["artistryName"] === "string" ? body["artistryName"] : undefined,
-        emailNotifications: typeof body["emailNotifications"] === "boolean" ? body["emailNotifications"] : undefined,
-        bookingUpdates: typeof body["bookingUpdates"] === "boolean" ? body["bookingUpdates"] : undefined,
-      });
+      const changes: Parameters<typeof updateCurrentUser>[1] = {};
+      if (typeof body["name"] === "string") changes.name = body["name"];
+      if (typeof body["phone"] === "string") changes.phone = body["phone"];
+      if (typeof body["city"] === "string") changes.city = body["city"];
+      if (typeof body["artistryName"] === "string") changes.artistryName = body["artistryName"];
+      if (typeof body["emailNotifications"] === "boolean") changes.emailNotifications = body["emailNotifications"];
+      if (typeof body["bookingUpdates"] === "boolean") changes.bookingUpdates = body["bookingUpdates"];
+      const user = await updateCurrentUser(request, changes);
       return json({ user });
     }
     if (pathname === "/api/auth/register" && request.method === "POST") {
-      const { user, token } = await registerAccount(await readAuthBody(request));
+      const { artistryName, ...registrationFields } = await readAuthBody(request);
+      const registration = { ...registrationFields } as Parameters<typeof registerAccount>[0];
+      if (artistryName !== undefined) registration.artistryName = artistryName;
+      const { user, token } = await registerAccount(registration);
       return json({ user }, { status: 201, headers: { "set-cookie": sessionCookie(token) } });
     }
     if (pathname === "/api/auth/login" && request.method === "POST") {
@@ -91,10 +94,16 @@ async function handleMarketplace(request: Request, pathname: string) {
   try {
     if (pathname === "/api/artists" && request.method === "GET") return json({ artists: await listArtists() });
     if (pathname === "/api/artists/me/dashboard" && request.method === "GET") return json(await artistDashboardFor(request));
+    if (pathname === "/api/artists/me/insights" && request.method === "GET") return json(await artistInsightsFor(request));
+    if (pathname === "/api/artists/me/subscription" && request.method === "GET") return json(await artistSubscriptionFor(request));
+    if (pathname === "/api/artists/me/subscription" && request.method === "POST") {
+      const body = await request.json() as { active?: boolean };
+      return json(await toggleArtistSubscription(request, body.active ?? true));
+    }
     if (pathname === "/api/artists/me/calendar" && request.method === "GET") return json(await calendarDataFor(request));
     if (pathname === "/api/artists/me/outside-bookings" && request.method === "POST") {
-      const body = await request.json() as { clientName?: string; clientPhone?: string; service?: string; date?: string; time?: string; location?: string; amount?: number; notes?: string };
-      return json({ booking: await createOutsideBooking(request, { clientName: body.clientName ?? "", clientPhone: body.clientPhone, service: body.service ?? "", date: body.date ?? "", time: body.time ?? "", location: body.location ?? "", amount: body.amount ?? -1, notes: body.notes }) }, { status: 201 });
+      const body = await request.json() as { clientName?: string; clientPhone?: string; service?: string; date?: string; time?: string; location?: string; amount?: number; advance?: number; notes?: string };
+      return json({ booking: await createOutsideBooking(request, { clientName: body.clientName ?? "", clientPhone: body.clientPhone, service: body.service ?? "", date: body.date ?? "", time: body.time ?? "", location: body.location ?? "", amount: body.amount ?? -1, advance: body.advance, notes: body.notes }) }, { status: 201 });
     }
     if (pathname.startsWith("/api/artists/me/outside-bookings/") && request.method === "DELETE") { await deleteOutsideBooking(request, pathname.split("/").at(-1)!); return json({ success: true }); }
     if (pathname === "/api/artists/me/services" && request.method === "GET") return json({ services: await artistServicesFor(request) });
@@ -103,9 +112,8 @@ async function handleMarketplace(request: Request, pathname: string) {
       return json({ service: await createArtistService(request, { name: typeof body.name === "string" ? body.name : "", durationMinutes: body.durationMinutes ?? 0, price: body.price ?? -1 }) }, { status: 201 });
     }
     if (pathname.startsWith("/api/artists/me/services/") && request.method === "PATCH") {
-      const body = await request.json() as { active?: boolean };
-      if (typeof body.active !== "boolean") throw new Error("Service active state is required.");
-      return json({ service: await setArtistServiceActive(request, pathname.split("/").at(-1)!, body.active) });
+      const body = await request.json() as { active?: boolean; price?: number; durationMinutes?: number; name?: string };
+      return json({ service: await updateArtistService(request, pathname.split("/").at(-1)!, body) });
     }
     if (pathname.startsWith("/api/artists/") && request.method === "GET") {
       const result = await artistById(pathname.split("/").at(-1)!);
@@ -119,8 +127,11 @@ async function handleMarketplace(request: Request, pathname: string) {
       return json({ booking: await createBooking(request, body) }, { status: 201 });
     }
     if (pathname.startsWith("/api/bookings/") && request.method === "PATCH") {
-      const body = await request.json() as { status: string };
-      return json({ booking: await changeBookingStatus(request, pathname.split("/").at(-1)!, body.status) });
+      const body = await request.json() as { status?: string; advance?: number };
+      const bookingId = pathname.split("/").at(-1)!;
+      if (typeof body.advance === "number") return json({ booking: await updateBookingAdvance(request, bookingId, body.advance) });
+      if (typeof body.status === "string") return json({ booking: await changeBookingStatus(request, bookingId, body.status) });
+      throw new Error("Provide a booking status or advance amount.");
     }
     return json({ error: "Not found" }, { status: 404 });
   } catch (error) { return json({ error: error instanceof Error ? error.message : "Request failed." }, { status: 400 }); }
@@ -163,12 +174,30 @@ export default {
       if (url.pathname.startsWith("/api/artists") || url.pathname.startsWith("/api/favorites") || url.pathname.startsWith("/api/bookings")) {
         return await handleMarketplace(request, url.pathname);
       }
+      if (url.pathname === "/api/notifications" && request.method === "GET") {
+        return json({ notifications: await notificationsFor(request) });
+      }
+      if (url.pathname === "/api/notifications/read" && request.method === "POST") {
+        return json(await markNotificationsRead(request));
+      }
+      if (url.pathname === "/api/artists/me/whatsapp" && request.method === "GET") {
+        return json(await getArtistWhatsAppConfig(request));
+      }
+      if (url.pathname === "/api/artists/me/whatsapp" && request.method === "POST") {
+        const body = (await request.json()) as { phone?: string; apikey?: string };
+        return json(await updateArtistWhatsAppConfig(request, { phone: body.phone ?? "", apikey: body.apikey ?? "" }));
+      }
       if ((url.pathname === "/api/reminders/run" || url.pathname === "/api/reminders/outside") && (request.method === "GET" || request.method === "POST")) {
         const cronSecret = process.env["CRON_SECRET"] ?? process.env["REMINDER_CRON_SECRET"];
         if (cronSecret && request.headers.get("authorization") !== `Bearer ${cronSecret}`) {
           return json({ error: "Unauthorized" }, { status: 401 });
         }
         return json(await sendBookingReminders());
+      }
+      if (url.pathname === "/api/reminders/trigger" && request.method === "POST") {
+        const body = (await request.json()) as { kind?: "PLATFORM" | "OUTSIDE"; bookingId?: string };
+        if (!body.kind || !body.bookingId) throw new Error("Booking kind and bookingId are required.");
+        return json(await triggerManualArtistReminder(request, body.kind, body.bookingId));
       }
 
       // UptimeRobot / Healthcheck Probe Endpoint
