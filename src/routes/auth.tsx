@@ -16,14 +16,17 @@ function AuthPage() {
   const [city, setCity] = useState("");
 
   async function detectLocation() {
-    if (!navigator.geolocation) return toast.error("Location detection is not supported in this browser.");
+    if (!navigator.geolocation) {
+      toast.error("Location detection is not supported in this browser.");
+      return;
+    }
     setLocating(true);
     navigator.geolocation.getCurrentPosition(async ({ coords }) => {
       try {
         const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${coords.latitude}&lon=${coords.longitude}`);
-        const place = (await response.json()) as { address?: Record<string, string> };
+        const place = (await response.json()) as { address?: Record<string, string | undefined> };
         const address = place.address ?? {};
-        const detected = address.city || address.town || address.village || address.county || address.state;
+        const detected = address["city"] || address["town"] || address["village"] || address["county"] || address["state"];
         if (!detected) throw new Error();
         setCity(detected);
         toast.success("Location detected");
@@ -51,7 +54,7 @@ function AuthPage() {
       });
       const payload = (await response.json()) as { error?: string; user?: { role: AccountRole } };
       if (!response.ok || !payload.user) throw new Error(payload.error ?? "Please try again.");
-      window.location.assign(payload.user.role === "ARTIST" ? "/pro" : "/");
+      window.location.assign(payload.user.role === "ARTIST" ? "/pro" : "/coming-soon");
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Please try again.");
     } finally {

@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as ComingSoonRouteImport } from './routes/coming-soon'
 import { Route as FavoritesRouteImport } from './routes/favorites'
 import { Route as NotificationsRouteImport } from './routes/notifications'
 import { Route as ProfileRouteImport } from './routes/profile'
@@ -29,6 +30,7 @@ import { Route as ChatConversationIdRouteImport } from './routes/chat.$conversat
 import { Route as ProIndexRouteImport } from './routes/pro.index'
 import { Route as ProBookingsRouteImport } from './routes/pro.bookings'
 import { Route as ProCalendarRouteImport } from './routes/pro.calendar'
+import { Route as ProInsightsRouteImport } from './routes/pro.insights'
 import { Route as ProServicesRouteImport } from './routes/pro.services'
 import { Route as ProSubscriptionRouteImport } from './routes/pro.subscription'
 
@@ -40,6 +42,11 @@ const IndexRoute = IndexRouteImport.update({
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
   path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ComingSoonRoute = ComingSoonRouteImport.update({
+  id: '/coming-soon',
+  path: '/coming-soon',
   getParentRoute: () => rootRouteImport,
 } as any)
 const FavoritesRoute = FavoritesRouteImport.update({
@@ -132,6 +139,11 @@ const ProCalendarRoute = ProCalendarRouteImport.update({
   path: '/pro/calendar',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ProInsightsRoute = ProInsightsRouteImport.update({
+  id: '/pro/insights',
+  path: '/pro/insights',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ProServicesRoute = ProServicesRouteImport.update({
   id: '/pro/services',
   path: '/pro/services',
@@ -146,6 +158,7 @@ const ProSubscriptionRoute = ProSubscriptionRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/coming-soon': typeof ComingSoonRoute
   '/favorites': typeof FavoritesRoute
   '/notifications': typeof NotificationsRoute
   '/profile': typeof ProfileRoute
@@ -161,6 +174,7 @@ export interface FileRoutesByFullPath {
   '/chat/$conversationId': typeof ChatConversationIdRoute
   '/pro/bookings': typeof ProBookingsRoute
   '/pro/calendar': typeof ProCalendarRoute
+  '/pro/insights': typeof ProInsightsRoute
   '/pro/services': typeof ProServicesRoute
   '/pro/subscription': typeof ProSubscriptionRoute
   '/admin/': typeof AdminIndexRoute
@@ -170,6 +184,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/coming-soon': typeof ComingSoonRoute
   '/favorites': typeof FavoritesRoute
   '/notifications': typeof NotificationsRoute
   '/profile': typeof ProfileRoute
@@ -185,6 +200,7 @@ export interface FileRoutesByTo {
   '/chat/$conversationId': typeof ChatConversationIdRoute
   '/pro/bookings': typeof ProBookingsRoute
   '/pro/calendar': typeof ProCalendarRoute
+  '/pro/insights': typeof ProInsightsRoute
   '/pro/services': typeof ProServicesRoute
   '/pro/subscription': typeof ProSubscriptionRoute
   '/admin': typeof AdminIndexRoute
@@ -195,6 +211,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/coming-soon': typeof ComingSoonRoute
   '/favorites': typeof FavoritesRoute
   '/notifications': typeof NotificationsRoute
   '/profile': typeof ProfileRoute
@@ -210,6 +227,7 @@ export interface FileRoutesById {
   '/chat/$conversationId': typeof ChatConversationIdRoute
   '/pro/bookings': typeof ProBookingsRoute
   '/pro/calendar': typeof ProCalendarRoute
+  '/pro/insights': typeof ProInsightsRoute
   '/pro/services': typeof ProServicesRoute
   '/pro/subscription': typeof ProSubscriptionRoute
   '/admin/': typeof AdminIndexRoute
@@ -221,6 +239,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/auth'
+    | '/coming-soon'
     | '/favorites'
     | '/notifications'
     | '/profile'
@@ -236,6 +255,7 @@ export interface FileRouteTypes {
     | '/chat/$conversationId'
     | '/pro/bookings'
     | '/pro/calendar'
+    | '/pro/insights'
     | '/pro/services'
     | '/pro/subscription'
     | '/admin/'
@@ -245,6 +265,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/auth'
+    | '/coming-soon'
     | '/favorites'
     | '/notifications'
     | '/profile'
@@ -260,6 +281,7 @@ export interface FileRouteTypes {
     | '/chat/$conversationId'
     | '/pro/bookings'
     | '/pro/calendar'
+    | '/pro/insights'
     | '/pro/services'
     | '/pro/subscription'
     | '/admin'
@@ -269,6 +291,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/auth'
+    | '/coming-soon'
     | '/favorites'
     | '/notifications'
     | '/profile'
@@ -284,6 +307,7 @@ export interface FileRouteTypes {
     | '/chat/$conversationId'
     | '/pro/bookings'
     | '/pro/calendar'
+    | '/pro/insights'
     | '/pro/services'
     | '/pro/subscription'
     | '/admin/'
@@ -294,6 +318,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthRoute: typeof AuthRoute
+  ComingSoonRoute: typeof ComingSoonRoute
   FavoritesRoute: typeof FavoritesRoute
   NotificationsRoute: typeof NotificationsRoute
   ProfileRoute: typeof ProfileRoute
@@ -309,6 +334,7 @@ export interface RootRouteChildren {
   ChatConversationIdRoute: typeof ChatConversationIdRoute
   ProBookingsRoute: typeof ProBookingsRoute
   ProCalendarRoute: typeof ProCalendarRoute
+  ProInsightsRoute: typeof ProInsightsRoute
   ProServicesRoute: typeof ProServicesRoute
   ProSubscriptionRoute: typeof ProSubscriptionRoute
   AdminIndexRoute: typeof AdminIndexRoute
@@ -330,6 +356,13 @@ declare module '@tanstack/react-router' {
       path: '/auth'
       fullPath: '/auth'
       preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/coming-soon': {
+      id: '/coming-soon'
+      path: '/coming-soon'
+      fullPath: '/coming-soon'
+      preLoaderRoute: typeof ComingSoonRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/favorites': {
@@ -458,6 +491,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProCalendarRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/pro/insights': {
+      id: '/pro/insights'
+      path: '/pro/insights'
+      fullPath: '/pro/insights'
+      preLoaderRoute: typeof ProInsightsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/pro/services': {
       id: '/pro/services'
       path: '/pro/services'
@@ -478,6 +518,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthRoute: AuthRoute,
+  ComingSoonRoute: ComingSoonRoute,
   FavoritesRoute: FavoritesRoute,
   NotificationsRoute: NotificationsRoute,
   ProfileRoute: ProfileRoute,
@@ -493,6 +534,7 @@ const rootRouteChildren: RootRouteChildren = {
   ChatConversationIdRoute: ChatConversationIdRoute,
   ProBookingsRoute: ProBookingsRoute,
   ProCalendarRoute: ProCalendarRoute,
+  ProInsightsRoute: ProInsightsRoute,
   ProServicesRoute: ProServicesRoute,
   ProSubscriptionRoute: ProSubscriptionRoute,
   AdminIndexRoute: AdminIndexRoute,

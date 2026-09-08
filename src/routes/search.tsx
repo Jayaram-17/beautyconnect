@@ -35,7 +35,10 @@ function SearchPage() {
   const [artists, setArtists] = useState<Artist[]>([]);
 
   useEffect(() => {
-    void fetch("/api/artists").then((response) => response.json()).then((payload: { artists?: Array<Record<string, unknown>> }) => setArtists((payload.artists ?? []).map(toArtist))).catch(() => setArtists([]));
+    void fetch("/api/artists")
+      .then((response) => response.json())
+      .then((payload: { artists?: Array<Record<string, unknown>> }) => setArtists((payload.artists ?? []).map(toArtist)))
+      .catch(() => setArtists([]));
   }, []);
 
   const results = artists
@@ -107,7 +110,7 @@ function SearchPage() {
 
       <div className="mt-4 flex flex-col gap-3">
         {results.map((a) => (
-          <ArtistCard key={a.id} artist={a} />
+          <ArtistCard key={a.id} artist={a} showBoostLabel={true} />
         ))}
         {results.length === 0 && (
           <p className="py-12 text-center text-sm text-muted-foreground">
@@ -119,4 +122,7 @@ function SearchPage() {
   );
 }
 
-function toArtist(source: Record<string, unknown>): Artist { const name = String(source.name ?? "Artist"); return { id: String(source.id), name, tagline: String(source.tagline ?? "Independent beauty artist"), city: String(source.city ?? ""), area: String(source.area ?? ""), rating: 0, reviews: 0, startingPrice: Number(source.startingPrice ?? 0), distanceKm: 0, premium: Boolean(source.premium), verified: Boolean(source.verified), specialties: Array.isArray(source.specialties) ? source.specialties.map(String) : [], initials: name.split(" ").map((part) => part[0]).join("").slice(0, 2), hue: 330 }; }
+function toArtist(source: Record<string, unknown>): Artist {
+  const name = String(source["name"] ?? "Artist");
+  return { id: String(source["id"]), name, tagline: String(source["tagline"] ?? "Independent beauty artist"), city: String(source["city"] ?? ""), area: String(source["area"] ?? ""), rating: 0, reviews: 0, startingPrice: Number(source["startingPrice"] ?? 0), distanceKm: 0, premium: Boolean(source["premium"]), verified: Boolean(source["verified"]), specialties: Array.isArray(source["specialties"]) ? source["specialties"].map(String) : [], initials: name.split(" ").map((part) => part[0] ?? "").join("").slice(0, 2), hue: 330 };
+}

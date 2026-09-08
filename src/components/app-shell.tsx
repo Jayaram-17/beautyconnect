@@ -1,6 +1,7 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import {
   Bell,
+  BarChart3,
   CalendarDays,
   Crown,
   Heart,
@@ -10,6 +11,7 @@ import {
   Receipt,
   Search,
   Scissors,
+  Settings,
   ShieldCheck,
   User,
   Users,
@@ -34,9 +36,8 @@ const customerTabs: Tab[] = [
 
 const artistTabs: Tab[] = [
   { to: "/pro", label: "Dashboard", icon: LayoutGrid, exact: true },
-  { to: "/pro/bookings", label: "Requests", icon: CalendarDays },
   { to: "/pro/calendar", label: "Calendar", icon: CalendarDays },
-  { to: "/pro/services", label: "Services", icon: Scissors },
+  { to: "/pro/insights", label: "Insights", icon: BarChart3 },
   { to: "/pro/subscription", label: "Plan", icon: Crown },
 ];
 
@@ -66,14 +67,38 @@ export function AppShell({
   const isAdmin = pathname.startsWith("/admin");
   const tabs = isAdmin ? adminTabs : isArtist ? artistTabs : customerTabs;
 
+  const [unreadCount, setUnreadCount] = useState(0);
+
   useEffect(() => {
-    if (!loading && !user) window.location.assign("/auth");
-    if (!loading && user?.role !== "ARTIST" && (pathname === "/pro" || pathname.startsWith("/pro/"))) {
-      window.location.assign("/");
+    if (loading) return;
+
+    if (!user) {
+      if (pathname !== "/auth" && !pathname.startsWith("/auth")) {
+        window.location.assign("/auth");
+      }
+      return;
     }
-    if (!loading && user?.role === "ARTIST" && !isAdmin && (pathname === "/" || pathname === "/search" || pathname.startsWith("/booking") || pathname.startsWith("/bookings") || pathname === "/favorites" || pathname === "/profile")) {
-      window.location.assign("/pro");
+
+    if (user.role === "USER") {
+      if (!pathname.startsWith("/coming-soon") && pathname !== "/notifications" && pathname !== "/settings") {
+        window.location.assign("/coming-soon");
+      }
+      return;
     }
+
+    if (user.role === "ARTIST" && !isAdmin) {
+      if (pathname === "/" || pathname === "/search" || pathname.startsWith("/booking") || pathname.startsWith("/bookings") || pathname === "/favorites" || pathname === "/profile") {
+        window.location.assign("/pro");
+      }
+    }
+
+    void fetch("/api/notifications")
+      .then((res) => (res.ok ? res.json() : { notifications: [] }))
+      .then((data: { notifications?: Array<{ readAt?: string | null }> }) => {
+        const count = (data.notifications ?? []).filter((n) => !n.readAt).length;
+        setUnreadCount(count);
+      })
+      .catch(() => setUnreadCount(0));
   }, [isAdmin, loading, pathname, user]);
 
   if (loading || !user) {
@@ -96,7 +121,14 @@ export function AppShell({
             </div>
             <div className="flex shrink-0 items-center gap-2">
               {headerRight}
-              {isArtist && <button onClick={() => void signOut().then(() => window.location.assign("/auth"))} aria-label="Log out" title="Log out" className="grid size-10 place-items-center rounded-full border bg-card text-destructive transition-colors hover:bg-accent"><LogOut className="size-4" /></button>}
+              <Link
+                to="/settings"
+                aria-label="Settings"
+                title="Settings"
+                className="grid size-10 place-items-center rounded-full border bg-card text-foreground transition-colors hover:bg-accent"
+              >
+                <Settings className="size-4" />
+              </Link>
               <ThemeToggle />
               <Link
                 to="/notifications"
@@ -104,7 +136,11 @@ export function AppShell({
                 className="relative grid size-10 place-items-center rounded-full border bg-card text-foreground transition-colors hover:bg-accent"
               >
                 <Bell className="size-4" />
-                <span className="absolute right-2 top-2 size-2 rounded-full bg-primary" />
+                {unreadCount > 0 && (
+                  <span className="absolute right-1 top-1 flex size-4 items-center justify-center rounded-full bg-primary text-[0.55rem] font-bold text-primary-foreground">
+                    {unreadCount > 9 ? "9+" : unreadCount}
+                  </span>
+                )}
               </Link>
             </div>
           </header>
@@ -169,14 +205,17 @@ function ProfileCompletion({ onSave }: { onSave: ReturnType<typeof useAuth>["upd
   const [saving, setSaving] = useState(false);
   const [locating, setLocating] = useState(false);
   const detect = () => {
-    if (!navigator.geolocation) return toast.error("Location detection is not supported in this browser.");
+    if (!navigator.geolocation) {
+      toast.error("Location detection is not supported in this browser.");
+      return;
+    }
     setLocating(true);
     navigator.geolocation.getCurrentPosition(async ({ coords }) => {
       try {
         const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${coords.latitude}&lon=${coords.longitude}`);
-        const payload = await response.json() as { address?: Record<string, string> };
+        const payload = await response.json() as { address?: Record<string, string | undefined> };
         const address = payload.address ?? {};
-        const detected = address.city || address.town || address.village || address.county || address.state;
+        const detected = address["city"] || address["town"] || address["village"] || address["county"] || address["state"];
         if (!detected) throw new Error();
         setCity(detected);
       } catch { toast.error("Could not determine your city. Please enter it manually."); }

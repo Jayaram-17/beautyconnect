@@ -1,5 +1,5 @@
 export function initSentry() {
-  const dsn = typeof process !== "undefined" ? process.env.SENTRY_DSN : undefined;
+  const dsn = typeof process !== "undefined" ? process.env["SENTRY_DSN"] : undefined;
   if (dsn) {
     console.log("[Sentry] Initialized with DSN:", dsn);
   } else {
@@ -8,7 +8,7 @@ export function initSentry() {
 }
 
 export function captureException(error: unknown, context?: Record<string, unknown>) {
-  const dsn = typeof process !== "undefined" ? process.env.SENTRY_DSN : undefined;
+  const dsn = typeof process !== "undefined" ? process.env["SENTRY_DSN"] : undefined;
   const timestamp = new Date().toISOString();
   
   console.error(`[Sentry Error ${timestamp}]`, error, context ?? "");

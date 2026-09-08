@@ -62,7 +62,7 @@ export async function sendWeeklyReportToSlack(targetWebhookUrl?: string): Promis
   payload: WeeklyReportPayload;
 }> {
   const data = generateWeeklyReportData();
-  const webhookUrl = targetWebhookUrl || (typeof process !== "undefined" ? process.env.SLACK_WEBHOOK_URL : undefined);
+  const webhookUrl = targetWebhookUrl || (typeof process !== "undefined" ? process.env["SLACK_WEBHOOK_URL"] : undefined);
 
   const slackBlocks = {
     blocks: [
